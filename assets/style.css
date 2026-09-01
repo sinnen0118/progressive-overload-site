@@ -1,0 +1,261 @@
+/* 筋トレプログラムメモ 公開サイト（LG-5）
+ *
+ * 色はアプリの Design/Tokens.swift から取った同じ値。
+ * ホーム画面のアプリからそのまま飛んでくるので、地の色が変わらないようにする。
+ *
+ * LG-4 の内容要件:「日本語・平易・拡大縮小なしで読める文字サイズ」。
+ * したがって本文は 17px（iOS の既定の本文と同じ）を下回らない。
+ */
+
+:root {
+  --canvas: #F4F3EF;
+  --surface: #FFFFFF;
+  --surface2: #F7F6F2;
+  --ink1: #17171A;
+  --ink2: #5A5955;
+  --ink3: #8B8A84;
+  --accent: #F2C230;
+  --accent-ink: #6B4E00;
+  --line: #D9D7D0;
+  --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #0B0C0F;
+    --surface: #191B20;
+    --surface2: #212429;
+    --ink1: #F5F6F8;
+    --ink2: #A8ACB4;
+    --ink3: #7A7F88;
+    --accent: #FFB020;
+    --accent-ink: #FFB020;
+    --line: #383A40;
+  }
+}
+
+:root[data-theme="dark"] {
+  --canvas: #0B0C0F;
+  --surface: #191B20;
+  --surface2: #212429;
+  --ink1: #F5F6F8;
+  --ink2: #A8ACB4;
+  --ink3: #7A7F88;
+  --accent: #FFB020;
+  --accent-ink: #FFB020;
+  --line: #383A40;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink1);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP",
+               "Yu Gothic", Meiryo, sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+}
+
+.wrap {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+/* ── ヘッダ ───────────────────────────────────────── */
+
+header.site {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+}
+
+header.site a.name {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink1);
+  text-decoration: none;
+}
+
+header.site .en {
+  font-size: 13px;
+  color: var(--ink3);
+  letter-spacing: 0.04em;
+}
+
+/* ── 見出し ───────────────────────────────────────── */
+
+h1 {
+  font-size: 26px;
+  line-height: 1.4;
+  margin: 0 0 6px;
+  letter-spacing: 0.005em;
+}
+
+.updated {
+  font-size: 14px;
+  color: var(--ink3);
+  margin: 0 0 32px;
+}
+
+h2 {
+  font-size: 19px;
+  margin: 40px 0 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  line-height: 1.5;
+}
+
+h2:first-of-type { border-top: none; padding-top: 0; }
+
+h3 {
+  font-size: 17px;
+  margin: 28px 0 8px;
+}
+
+p { margin: 0 0 16px; }
+
+ul, ol { margin: 0 0 16px; padding-left: 1.4em; }
+li { margin-bottom: 6px; }
+
+a { color: var(--accent-ink); }
+
+strong { font-weight: 700; }
+
+/* ── 表 ───────────────────────────────────────────── */
+
+.scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 0 20px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 15px;
+  line-height: 1.6;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  background: var(--surface2);
+  font-weight: 700;
+}
+
+thead th { white-space: nowrap; }
+
+/* 行見出し（tbody の th）は**必ず折り返す**。
+   ここに nowrap を掛けると1列目が伸びきり、右の列が画面外へ押し出される */
+tbody th {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+td { overflow-wrap: anywhere; }
+
+tbody tr:last-child th,
+tbody tr:last-child td { border-bottom: none; }
+
+/* 項目名を左に立てる縦表 */
+table.rows { table-layout: auto; }
+table.rows th { width: 8.5rem; }
+
+.prices { list-style: none; padding: 0; margin: 0 0 12px; }
+.prices li { margin-bottom: 4px; }
+.prices b { font-weight: 700; }
+
+/* 狭い画面では**段組みをやめて積む**。
+   2列のまま詰めると、項目名の列が1文字ずつ折り返して読めなくなる */
+@media (max-width: 560px) {
+  table.rows,
+  table.rows tbody,
+  table.rows tr,
+  table.rows > tbody > tr > th,
+  table.rows > tbody > tr > td { display: block; width: auto; }
+
+  table.rows > tbody > tr { border-bottom: 1px solid var(--line); }
+  table.rows > tbody > tr:last-child { border-bottom: none; }
+
+  table.rows > tbody > tr > th {
+    background: transparent;
+    border-bottom: none;
+    padding: 14px 14px 0;
+    font-size: 14px;
+    color: var(--ink2);
+    font-weight: 700;
+  }
+  table.rows > tbody > tr > th br { display: none; }
+
+  table.rows > tbody > tr > td {
+    border-bottom: none;
+    padding: 2px 14px 14px;
+  }
+}
+
+/* ── カード ───────────────────────────────────────── */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 0 0 20px;
+}
+
+.card p:last-child { margin-bottom: 0; }
+
+.note {
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+/* ── 索引（トップ） ───────────────────────────────── */
+
+nav.index { display: grid; gap: 10px; margin: 0 0 32px; }
+
+nav.index a {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  text-decoration: none;
+  color: var(--ink1);
+}
+
+nav.index a .t { font-weight: 700; }
+nav.index a .d { display: block; font-size: 14px; color: var(--ink2); margin-top: 2px; }
+
+/* ── フッタ ───────────────────────────────────────── */
+
+footer.site {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--ink3);
+}
+
+footer.site a { color: var(--ink2); }
+footer.site ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; }
