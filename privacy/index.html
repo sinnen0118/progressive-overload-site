@@ -86,7 +86,7 @@
 <h3>1-3. 開発者に送られるもの（利用状況）</h3>
 <p>本アプリは、どの画面が開かれ、どの機能が使われたかという操作イベントを、解析サービス<strong>Aptabase</strong>へ送信します。アプリの使われ方を把握し、改善するために利用します。</p>
 <p>イベント名のほか、送信時刻、短い期間のセッション情報、端末の機種、OS・言語・アプリとSDKの版などの技術情報が含まれます。アプリは、解析用の長期の利用者IDや広告識別子を付けません。</p>
-<p>Aptabaseは、通信時のIPアドレスと通信ソフトの情報を一時的に処理し、国・地域のおおよその情報と、日単位で切り替わる集計用の識別情報を作ります。IPアドレスと通信ソフトの元の情報は解析データとして保存しません。アプリはGPSなどによる正確な位置情報を取得しません。開発者は解析情報を購入管理の識別子と結合したり、個人を特定するために使ったりしません。</p>
+<p>Aptabaseは、通信時のIPアドレスと通信ソフトの情報を一時的に処理し、国・地域のおおよその情報と、日単位で切り替わる集計用の識別情報を作ります。IPアドレスと通信ソフトの元の情報は解析データとして保存しません。アプリはGPSなどによる正確な位置情報を取得しません。開発者はAptabaseの解析情報を購入管理の識別子と結合したり、個人を特定するために使ったりしません。</p>
 <p><strong>種目名・重量・回数・推定1RM・体重・体脂肪率・採寸・心拍などの記録値や、運動・身体測定の記録対象日時は、利用状況の解析へ送りません。</strong>氏名・メールアドレス・Apple Accountの情報も解析へ送りません。</p>
 
 <h3>1-4. 購入情報</h3>
@@ -103,6 +103,8 @@ Pro をご購入いただいた場合、購入の状態（どの商品を、い�
 決済そのものは Apple が処理し、<strong>開発者はクレジットカード番号などの支払情報を受け取りません。</strong>
 </p>
 
+<p>RevenueCatは、購入元の国や、通信時のIPアドレスから求めた国の情報を、購入管理用UUIDに関連付けた顧客情報・集計に使います。RevenueCatの説明では、国を求めた後に元のIPアドレスを保持しません。アプリはGPSによる現在地や住所を送信しません。</p>
+
 <h3>1-5. 外部AIを使ったプログラムの作成・取り込み</h3>
 <p>この機能では、利用者が選んだ外部AIへ、利用者自身がプログラムや変換用の指示を渡します。本アプリから外部AIへ計画や記録を自動送信することはありません。アプリが用意する変換用の指示には、利用者のトレーニング記録や身体計測値を含めません。</p>
 <p>外部AIに入力する内容は利用者が選択します。入力した情報の取り扱いは、利用先のAIサービスの利用規約とプライバシーポリシーをご確認ください。</p>
@@ -115,7 +117,7 @@ Pro をご購入いただいた場合、購入の状態（どの商品を、い�
   <tbody>
     <tr><th>Apple</th><td>App Storeの購入処理／iCloud・ヘルスケアの保管／クラッシュレポート（あなたが共有を許可した場合）</td><td>販売・同期・不具合の修正</td></tr>
     <tr><th>Aptabase</th><td>操作イベントと技術情報（1-3）</td><td>利用状況の把握</td></tr>
-    <tr><th>RevenueCat</th><td>購入状態・UUID・端末識別子・技術情報（1-4）</td><td>購入情報の集計・管理</td></tr>
+    <tr><th>RevenueCat</th><td>購入状態・UUID・端末識別子・技術情報・国の情報（1-4）</td><td>購入情報の集計・管理</td></tr>
   </tbody>
 </table>
 </div>
@@ -127,7 +129,7 @@ Pro をご購入いただいた場合、購入の状態（どの商品を、い�
 データを販売することも、広告のために利用することもありません。
 </p>
 
-<p class="note">各サービスの方針: <a href="https://www.apple.com/jp/legal/privacy/">Apple</a> ／ <a href="https://aptabase.com/legal/privacy">Aptabase</a>（<a href="https://aptabase.com/legal/dpa">データ処理の説明</a>） ／ <a href="https://www.revenuecat.com/privacy-policy">RevenueCat</a></p>
+<p class="note">各サービスの方針: <a href="https://www.apple.com/jp/legal/privacy/">Apple</a> ／ <a href="https://aptabase.com/legal/privacy">Aptabase</a>（<a href="https://aptabase.com/legal/dpa">データ処理の説明</a>） ／ <a href="https://www.revenuecat.com/privacy-policy">RevenueCat</a>（<a href="https://www.revenuecat.com/docs/dashboard-and-metrics/customer-profile">国の情報の扱い</a>）</p>
 
 <h2>3. データの保持と削除</h2>
 
@@ -171,7 +173,7 @@ Pro をご購入いただいた場合、購入の状態（どの商品を、い�
   <thead><tr><th>送信される情報</th><th>送信先</th><th>利用目的</th></tr></thead>
   <tbody>
     <tr><th>操作イベント、送信時刻・セッション情報・端末の機種・OS・言語・アプリとSDKの版などの技術情報。通信情報から求めた国・地域の概略と日単位の集計用識別情報</th><td>Aptabase（Technov Solutions SRL）</td><td>本アプリの利用状況の把握と改善</td></tr>
-    <tr><th>購入状態、本アプリが生成したUUID、端末識別子（IDFV）・OS・アプリの版などの技術情報</th><td>RevenueCat（RevenueCat, Inc.）</td><td>購入情報の集計・管理</td></tr>
+    <tr><th>購入状態、本アプリが生成したUUID、端末識別子（IDFV）・OS・アプリの版などの技術情報。購入元の国と、通信情報から求めた国の情報</th><td>RevenueCat（RevenueCat, Inc.）</td><td>購入情報の集計・管理</td></tr>
   </tbody>
 </table>
 </div>
