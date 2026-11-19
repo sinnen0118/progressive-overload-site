@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Progress Note 動作確認シート</title>
+<style>
+:root{
+  --bg:#f5f3f0; --card:#ffffff; --ink:#1c1a18; --ink2:#5a554f; --line:#e3ded7;
+  --accent:#c2255c; --accent-ink:#ffffff; --accent-soft:#fbe7ee;
+  --ok:#1d7146; --ok-soft:#e3f3ea; --note:#7a5200; --note-soft:#fff2d4;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#131211; --card:#1e1c1a; --ink:#f2eee8; --ink2:#bcb4aa; --line:#36322e;
+    --accent:#ff7aa8; --accent-ink:#1d0a12; --accent-soft:#3b1c28;
+    --ok:#74d6a3; --ok-soft:#173125; --note:#f3c871; --note-soft:#3a2d12;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+  font-size:17px;line-height:1.7;word-break:normal;overflow-wrap:anywhere;line-break:strict}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 56px}
+header{padding:28px 0 8px}
+.app{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--accent);margin:0}
+h1{font-size:28px;line-height:1.3;margin:4px 0 10px}
+.lead{margin:0 0 6px;color:var(--ink)}
+.sub{margin:0;color:var(--ink2);font-size:15px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 10px;border-bottom:1px solid var(--line)}
+.bar-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:15px}
+.bar-row b{font-size:22px;color:var(--accent)}
+.meter{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .25s}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+nav.toc a{display:inline-flex;align-items:center;min-height:40px;padding:6px 12px;border-radius:99px;background:var(--card);
+  border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 16px;margin:16px 0}
+h2{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;font-size:21px;line-height:1.35;margin:0 0 6px}
+.badge{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:17px;flex:none}
+.time{font-size:14px;font-weight:600;color:var(--ink2);background:var(--bg);border-radius:99px;padding:2px 10px}
+.secount{margin-left:auto;font-size:14px;font-weight:700;color:var(--ok)}
+.intro{margin:0 0 8px;color:var(--ink2);font-size:15px}
+ul.plain{margin:6px 0 0;padding-left:1.2em}
+ul.plain li{margin:6px 0}
+.important{background:var(--note-soft);color:var(--ink);border-radius:12px;padding:12px 14px;margin:12px 0 0}
+.important b{color:var(--note)}
+.item{border-top:1px solid var(--line);padding:4px 0}
+.item:first-of-type{border-top:none}
+.row{display:flex;gap:14px;align-items:flex-start;padding:12px 8px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.row input[type=checkbox]{width:28px;height:28px;flex:none;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
+.txt{display:block;min-width:0}
+.num{display:inline-block;font-size:13px;font-weight:700;color:var(--ink2);margin-right:6px}
+.do{font-weight:600}
+.ok{display:block;margin-top:4px;font-size:15px;color:var(--ok)}
+.ok::before{content:"こうなれば OK：";font-weight:700}
+.item:has(input.chk:checked) .row{background:var(--ok-soft)}
+.item:has(input.chk:checked) .do{color:var(--ink2)}
+.hint{margin:0 8px 8px 50px;font-size:15px;color:var(--ink2);background:var(--bg);border-radius:10px;padding:8px 12px}
+.hint::before{content:"ひとこと：";font-weight:700;color:var(--ink)}
+.hint.must{background:var(--note-soft);color:var(--ink)}
+.hint.must::before{content:"大事：";color:var(--note)}
+fieldset.choice{border:none;margin:0 8px 10px 50px;padding:0}
+fieldset.choice legend{font-size:15px;font-weight:700;padding:0;margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 14px 6px 10px;border:1px solid var(--line);border-radius:99px;
+  background:var(--card);font-size:15px;cursor:pointer}
+.chips input{width:20px;height:20px;margin:0;accent-color:var(--accent)}
+.chips label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+.field{display:block;margin:10px 0}
+.field span{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
+.field small{display:block;font-size:14px;color:var(--ink2);font-weight:400;margin-top:2px}
+input[type=text],textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px}
+textarea{min-height:76px;resize:vertical}
+.memo{display:block;margin:12px 8px 0}
+.memo span{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
+.dont{border-left:4px solid var(--accent);padding:4px 0 4px 12px;margin:12px 0 0}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+button{font:inherit;font-size:17px;font-weight:700;min-height:52px;padding:10px 20px;border-radius:14px;border:none;cursor:pointer}
+.primary{background:var(--accent);color:var(--accent-ink);flex:1 1 220px}
+.secondary{background:var(--card);color:var(--ink);border:1px solid var(--line);flex:1 1 160px}
+.quiet{background:transparent;color:var(--ink2);font-size:15px;font-weight:600;min-height:44px;padding:8px 4px;text-decoration:underline}
+.status{min-height:1.7em;margin:0;font-weight:700;color:var(--ok)}
+#summary{min-height:220px;font-size:15px;line-height:1.6;background:var(--bg)}
+footer{color:var(--ink2);font-size:14px;text-align:center;margin-top:24px}
+@media (max-width:420px){
+  h1{font-size:25px}
+  .hint,fieldset.choice{margin-left:8px}
+  .row{gap:12px;padding:12px 6px}
+}
+@media print{
+  :root{--bg:#fff;--card:#fff;--ink:#000;--ink2:#333;--line:#bbb;--ok:#000;--ok-soft:#fff;--accent:#000;--accent-ink:#fff;--note-soft:#fff;--shadow:none}
+  body{font-size:12pt;line-height:1.5}
+  .bar,nav.toc,.btns,.no-print,#summary,.status{display:none!important}
+  .card{break-inside:auto;box-shadow:none;border:1px solid #999;margin:10px 0;padding:12px}
+  .item{break-inside:avoid}
+  .badge{border:1px solid #000}
+  .hint.must{border:1px solid #999}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="app">Progress Note（プログレスノート）</p>
+  <h1>動作確認シート</h1>
+  <p class="lead">App Store に出す前の、筋トレ記録アプリのテスト版です。大事なところがきちんと動くかを、実際に使って確かめてください。</p>
+  <p class="sub">上から順に進めて、うまくいったら □ に ✓ を付けてください。途中で閉じても、同じブラウザで開き直せば ✓ は残ります。</p>
+</header>
+
+<div class="bar" role="status" aria-live="polite">
+  <div class="bar-row"><span>できた数</span><span><b id="count">0</b> / <span id="total">36</span></span></div>
+  <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+</div>
+
+<nav class="toc" aria-label="もくじ">
+  <a href="#before">はじめる前に</a>
+  <a href="#sec1">1 入れる</a>
+  <a href="#sec2">2 はじめての画面</a>
+  <a href="#sec3">3 記録する</a>
+  <a href="#sec4">4 見る</a>
+  <a href="#sec5">5 設定</a>
+  <a href="#sec6">6 全体</a>
+  <a href="#send">結果を送る</a>
+</nav>
+
+<section class="card" id="before">
+  <h2>はじめる前に（読むだけ）</h2>
+  <ul class="plain">
+    <li><b>かかる時間：</b>20〜30分くらいです。</li>
+    <li><b>お金はかかりません。</b>テスト版（TestFlight で入れたアプリ）の中で「購入」をしても、実際には支払われません。</li>
+    <li><b>うまくいかない所があっても大丈夫です。</b>そこで止めて、画面を撮り（スクリーンショット）、何をしたら何が起きたかを、その章の「メモ」に書いてください。
+      <ul class="plain">
+        <li>画面の撮り方：右側の「サイドボタン」と、左側の「音量を上げるボタン」を同時に押して、すぐ離します。</li>
+        <li>アプリの閉じ方：画面のいちばん下から上へゆっくりなぞり、途中で指を止めます。アプリの画面が並んだら、Progress Note を上へはらいます。もう一度開く時は、ホーム画面のアイコンを押します。</li>
+        <li>アプリが急に閉じた後に「開発者と共有しますか」のように聞かれたら、「共有」を押してください。落ちた時の記録が作った人に届きます。</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="important">
+    <b>しないでほしいこと</b>
+    <ul class="plain">
+      <li>設定の中の「記録を消す」は押さないでください。</li>
+      <li>「購読を管理する」から解約などの手続きをする必要はありません（テスト用なので、お金はかかりません）。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="card" id="info">
+  <h2>使った iPhone</h2>
+  <label class="field"><span>iPhone の機種</span><input type="text" id="f-device" placeholder="例：iPhone 15" autocomplete="off"></label>
+  <label class="field"><span>iOS のバージョン</span><input type="text" id="f-ios" placeholder="例：26.1" autocomplete="off">
+    <small>iPhone の「設定」→「一般」→「情報」の「iOS バージョン」に出ています。</small></label>
+  <label class="field"><span>試した日</span><input type="text" id="f-date" placeholder="例：11月19日" autocomplete="off"></label>
+</section>
+
+<section class="card" id="sec1" data-title="1. アプリを入れる">
+  <h2><span class="badge">1</span>アプリを入れる <span class="time">約5分</span><span class="secount" data-sec="sec1"></span></h2>
+
+  <div class="item">
+    <label class="row" for="s1-1"><input class="chk" type="checkbox" id="s1-1" data-short="招待のメールを開けた">
+      <span class="txt"><span class="num">1-1</span><span class="do">iPhone で、招待のメールを開く。題名に「TestFlight」と入っています。</span>
+      <span class="ok">メールの中に「View in TestFlight」（TestFlight で見る）などのボタンがある</span></span></label>
+    <p class="hint">招待は、Apple の開発者の登録（App Store Connect）に使っているメールアドレスに届いています。見つからない時は、迷惑メールのフォルダも見てください。それでも無い時は、送った人に知らせてください。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s1-2"><input class="chk" type="checkbox" id="s1-2" data-short="TestFlight アプリを入れた">
+      <span class="txt"><span class="num">1-2</span><span class="do">App Store で「TestFlight」（テストフライト）を入れる。Apple が作っている無料のアプリです。</span>
+      <span class="ok">ホーム画面に、青いプロペラの絵の「TestFlight」が出た</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s1-3"><input class="chk" type="checkbox" id="s1-3" data-short="TestFlight から入れられた">
+      <span class="txt"><span class="num">1-3</span><span class="do">メールのボタンを押して TestFlight を開き、画面の案内にそって「インストール」まで進む。</span>
+      <span class="ok">Progress Note が入り始めた</span></span></label>
+    <p class="hint">入らない時は、上の「iOS のバージョン」を書いてください。iOS 18 より前の iPhone には入りません。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s1-4"><input class="chk" type="checkbox" id="s1-4" data-short="ホーム画面にアイコンが出た">
+      <span class="txt"><span class="num">1-4</span><span class="do">ホーム画面に「Progress Note」のアイコンが出たのを見る。</span>
+      <span class="ok">アイコンが出た（名前の左の小さなオレンジの点は、テスト版のしるしです）</span></span></label>
+  </div>
+
+  <label class="memo"><span>この章で気になった事（あれば）</span><textarea id="m-sec1" rows="2" placeholder="例：メールが見つからなかった"></textarea></label>
+</section>
+
+<section class="card" id="sec2" data-title="2. はじめての画面">
+  <h2><span class="badge">2</span>はじめての画面 <span class="time">約10分</span><span class="secount" data-sec="sec2"></span></h2>
+  <p class="intro">アプリを開くと、いくつかの質問のあとに、あなた用の計画（プログラム）ができます。いちばん大事なのは、この章の「購入」のところです。</p>
+
+  <div class="item">
+    <label class="row" for="s2-1"><input class="chk" type="checkbox" id="s2-1" data-short="最初の画面が出た">
+      <span class="txt"><span class="num">2-1</span><span class="do">アプリを開くと「まずはあなたにあったプログラムを、一緒に作っていきましょう」と出る。下の「質問に答える」を押す。</span>
+      <span class="ok">質問の画面に進んだ</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-2"><input class="chk" type="checkbox" id="s2-2" data-short="性別を選んで進めた">
+      <span class="txt"><span class="num">2-2</span><span class="do">性別を選んで「次へ」を押す（「答えない」も選べます）。</span>
+      <span class="ok">「目指したい方向を、ひとつ選んでください。」の画面になった</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-3"><input class="chk" type="checkbox" id="s2-3" data-short="ベンチプレス100kg を押すと購入の画面が出た">
+      <span class="txt"><span class="num">2-3</span><span class="do">一覧のいちばん下のほうにある「ベンチプレス100kg」（「Pro」の札が付いたカード）を押す。</span>
+      <span class="ok">購入の画面（Pro の説明）が出た</span></span></label>
+    <p class="hint must">ここでは何も買わずに、右上の「×」で閉じてください。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-4"><input class="chk" type="checkbox" id="s2-4" data-short="閉じると一覧に戻り、ベンチは選ばれていなかった">
+      <span class="txt"><span class="num">2-4</span><span class="do">「×」で閉じて、目的の一覧に戻る。</span>
+      <span class="ok">「ベンチプレス100kg」は選ばれていない（Pro を買っていない時は選べないのが、正しい動きです）</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-5"><input class="chk" type="checkbox" id="s2-5" data-short="ほかの目的を選んで進めた">
+      <span class="txt"><span class="num">2-5</span><span class="do">ほかの目的を1つ選んで、「この目的で進む」を押す。</span>
+      <span class="ok">「週に何日、記録しますか？」の画面になった</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-6"><input class="chk" type="checkbox" id="s2-6" data-short="日数と曜日を選んで進めた">
+      <span class="txt"><span class="num">2-6</span><span class="do">週に何日するかを選び、「この曜日で進む」を押す。</span>
+      <span class="ok">「1回のトレーニングにあてられる時間は？」の画面になった</span></span></label>
+    <p class="hint must">曜日の並びで、今日の曜日が「休み」になっていたら、押して入れてください。数が合わない時は、画面の案内（「あと1日、選んでください」など）にしたがって、ほかの曜日を1つ押して「休み」にします。今日の分を記録して試すためです。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-7"><input class="chk" type="checkbox" id="s2-7" data-short="時間を選んで進めた">
+      <span class="txt"><span class="num">2-7</span><span class="do">1回の時間を選んで、「この時間で進む」を押す。</span>
+      <span class="ok">体重の画面になった</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-8"><input class="chk" type="checkbox" id="s2-8" data-short="体重の画面を進めた">
+      <span class="txt"><span class="num">2-8</span><span class="do">体重は、入れて「この体重で進む」を押しても、「あとで」を押しても大丈夫です。</span>
+      <span class="ok">次の画面に進んだ</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-9"><input class="chk" type="checkbox" id="s2-9" data-short="プログラムが完成し、人の体の図が出た">
+      <span class="txt"><span class="num">2-9</span><span class="do">「あなたのためのプログラムが完成しました」と、人の体の図が出る。「このプログラムで始める」を押す。</span>
+      <span class="ok">Pro（有料の機能）の案内の画面になった</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-10"><input class="chk" type="checkbox" id="s2-10" data-short="月額・年額・買い切りの値段が出た">
+      <span class="txt"><span class="num">2-10</span><span class="do">画面の下に、月額・年額・買い切りの値段が出ているかを見る。</span>
+      <span class="ok">3つの値段が出ている</span></span></label>
+    <fieldset class="choice" data-short="値段の表示">
+      <legend>値段は何で出ていましたか</legend>
+      <div class="chips">
+        <label><input type="radio" name="c-price" value="円"><span>円</span></label>
+        <label><input type="radio" name="c-price" value="ドル（$）"><span>ドル（$）</span></label>
+        <label><input type="radio" name="c-price" value="出ていない"><span>出ていない</span></label>
+      </div>
+    </fieldset>
+    <p class="hint">値段のかわりに「再試行」が出ている時は、1回押してください。それでも出ない時は、メモに書いてください。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-11"><input class="chk" type="checkbox" id="s2-11" data-short="右上の × と「無料のまま始める」があった">
+      <span class="txt"><span class="num">2-11</span><span class="do">右上に「×」があるのを見る。画面を下へ送ると、「無料のまま始める」のボタンもあるのを見る（どちらも、ここでは押しません）。</span>
+      <span class="ok">両方あった</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-12"><input class="chk" type="checkbox" id="s2-12" data-short="「購入を復元」で「見つかりませんでした」と出た">
+      <span class="txt"><span class="num">2-12</span><span class="do">画面をいちばん下まで送り、「購入を復元」を押す。</span>
+      <span class="ok">「復元できる購入は見つかりませんでした。」と出た（まだ何も買っていないので、これが正しい動きです）</span></span></label>
+    <p class="hint">Apple のパスワードを聞かれたら、入れてください。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-13"><input class="chk" type="checkbox" id="s2-13" data-short="大きなボタンで Apple の購入の画面が出た">
+      <span class="txt"><span class="num">2-13</span><span class="do">下の値段の欄で「年額」を押して選び、その下の大きなボタンを押す。</span>
+      <span class="ok">Apple の購入の画面が、下から出てきた</span></span></label>
+    <fieldset class="choice" data-short="大きなボタンの文字">
+      <legend>大きなボタンには、何と書いてありましたか</legend>
+      <div class="chips">
+        <label><input type="radio" name="c-button" value="1ヶ月無料体験で本気のトレーニングを始める"><span>「1ヶ月無料体験で本気のトレーニングを始める」</span></label>
+        <label><input type="radio" name="c-button" value="Proで本気のトレーニングを始める"><span>「Proで本気のトレーニングを始める」</span></label>
+        <label><input type="radio" name="c-button" value="そのほか"><span>そのほか</span></label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-14"><input class="chk" type="checkbox" id="s2-14" data-short="Apple の画面で購入を済ませた">
+      <span class="txt"><span class="num">2-14</span><span class="do">Apple の購入の画面で、いつもアプリを買う時と同じように確かめる（サイドボタンを2回押す・Face ID など）。</span>
+      <span class="ok">Apple の画面が閉じた（テスト版なので、お金はかかりません）</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-15"><input class="chk" type="checkbox" id="s2-15" data-short="「ようこそ」の画面が出た">
+      <span class="txt"><span class="num">2-15</span><span class="do">アプリに「最上級の環境へ ようこそ。」の画面が出るのを待つ。</span>
+      <span class="ok">「ようこそ」の画面が出た</span></span></label>
+    <fieldset class="choice" data-short="「ようこそ」が出るまでの時間">
+      <legend>Apple の画面が閉じてから、「ようこそ」が出るまでの時間</legend>
+      <div class="chips">
+        <label><input type="radio" name="c-welcome" value="すぐ（5秒以内）"><span>すぐ（5秒以内）</span></label>
+        <label><input type="radio" name="c-welcome" value="少し待った（20秒以内）"><span>少し待った（20秒以内）</span></label>
+        <label><input type="radio" name="c-welcome" value="かなり待った（20秒より長い）"><span>かなり待った（20秒より長い）</span></label>
+        <label><input type="radio" name="c-welcome" value="出なかった"><span>出なかった</span></label>
+      </div>
+    </fieldset>
+    <p class="hint">1分たっても変わらない時は、画面を撮ってから、アプリを閉じて開き直してください。どうなったかをメモに書いてください。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-16"><input class="chk" type="checkbox" id="s2-16" data-short="操作の説明を見た（またはスキップ）">
+      <span class="txt"><span class="num">2-16</span><span class="do">「次へ」を押す。「基本の操作を〇秒で確認しましょう」で「確認する」を押して、短い説明を見る（「スキップ」でも大丈夫です）。</span>
+      <span class="ok">「さあ、早速はじめましょう」の画面になった</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s2-17"><input class="chk" type="checkbox" id="s2-17" data-short="「記録を始める」で記入の画面になった">
+      <span class="txt"><span class="num">2-17</span><span class="do">「記録を始める」を押す。</span>
+      <span class="ok">記録を書きこむ画面（記入の画面）になった</span></span></label>
+  </div>
+
+  <label class="memo"><span>この章で気になった事（あれば）</span><textarea id="m-sec2" rows="2" placeholder="例：「ようこそ」が出るまで30秒くらい止まって見えた"></textarea></label>
+</section>
+
+<section class="card" id="sec3" data-title="3. 記録する">
+  <h2><span class="badge">3</span>記録する <span class="time">約5分</span><span class="secount" data-sec="sec3"></span></h2>
+  <p class="intro">実際にトレーニングをしなくても大丈夫です。適当な数字で試してください。</p>
+
+  <div class="item">
+    <label class="row" for="s3-1"><input class="chk" type="checkbox" id="s3-1" data-short="今日の種目のカードが出ていた">
+      <span class="txt"><span class="num">3-1</span><span class="do">記入の画面に、今日の種目のカードが出ているかを見る。</span>
+      <span class="ok">種目の名前と、重さ・回数を書く欄がある</span></span></label>
+    <p class="hint">出ていない時は、「種目を選ぶ」から好きな種目を1つ選んでください（メモにも書いてください）。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s3-2"><input class="chk" type="checkbox" id="s3-2" data-short="重さを入れられた">
+      <span class="txt"><span class="num">3-2</span><span class="do">重さの欄を押して数字（例：20）を入れ、キーボードの上の「完了」（✓）を押す。</span>
+      <span class="ok">欄に重さが入った</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s3-3"><input class="chk" type="checkbox" id="s3-3" data-short="回数を入れて記録できた">
+      <span class="txt"><span class="num">3-3</span><span class="do">回数の欄を押して数字（例：10）を入れ、「完了」を押す。</span>
+      <span class="ok">その行が記録された（休憩の時間が動き出すこともあります）</span></span></label>
+    <p class="hint">はじめて記録すると、「通知」を送ってよいかを聞かれます。どちらを選んでもかまいません（休憩の終わりを知らせるためのものです）。</p>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s3-4"><input class="chk" type="checkbox" id="s3-4" data-short="あと2回くらい記録できた">
+      <span class="txt"><span class="num">3-4</span><span class="do">同じように、あと2回くらい記録する。</span>
+      <span class="ok">記録した行が増えていく</span></span></label>
+    <fieldset class="choice" data-short="数字を入れる時の速さ">
+      <legend>数字を入れる時の速さは、どうでしたか</legend>
+      <div class="chips">
+        <label><input type="radio" name="c-speed" value="さっと入る"><span>さっと入る</span></label>
+        <label><input type="radio" name="c-speed" value="少しもたつく"><span>少しもたつく</span></label>
+        <label><input type="radio" name="c-speed" value="かなり遅い"><span>かなり遅い</span></label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s3-5"><input class="chk" type="checkbox" id="s3-5" data-short="「今日の筋トレを終了する」でお祝いの画面が出た">
+      <span class="txt"><span class="num">3-5</span><span class="do">画面のいちばん下にある「今日の筋トレを終了する」を押す。</span>
+      <span class="ok">お祝い（成果）の画面が出た。動画が出たら、そのまま見てください</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s3-6"><input class="chk" type="checkbox" id="s3-6" data-short="お祝いの画面を閉じて戻れた">
+      <span class="txt"><span class="num">3-6</span><span class="do">お祝いの画面を、右上の「×」で閉じる。</span>
+      <span class="ok">記入の画面に戻れた</span></span></label>
+  </div>
+
+  <label class="memo"><span>この章で気になった事（あれば）</span><textarea id="m-sec3" rows="2" placeholder="例：数字を入れた後、少し固まった"></textarea></label>
+</section>
+
+<section class="card" id="sec4" data-title="4. 見る">
+  <h2><span class="badge">4</span>見る <span class="time">約3分</span><span class="secount" data-sec="sec4"></span></h2>
+  <p class="intro">画面のいちばん下に並んでいるボタン（「記入」「今週」「記録」「プログラム」）で、画面を切り替えます。</p>
+
+  <div class="item">
+    <label class="row" for="s4-1"><input class="chk" type="checkbox" id="s4-1" data-short="「今週」で人の体の図に色が付いていた">
+      <span class="txt"><span class="num">4-1</span><span class="do">下の「今週」を押す。</span>
+      <span class="ok">人の体の図が出て、今日鍛えた所に色が付いている</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s4-2"><input class="chk" type="checkbox" id="s4-2" data-short="「記録」に今日の記録が出ていた">
+      <span class="txt"><span class="num">4-2</span><span class="do">下の「記録」を押す。</span>
+      <span class="ok">今日の記録（種目・重さ・回数）が出ている</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s4-3"><input class="chk" type="checkbox" id="s4-3" data-short="「プログラム」に作ったプログラムが出ていた">
+      <span class="txt"><span class="num">4-3</span><span class="do">下の「プログラム」を押す。</span>
+      <span class="ok">はじめての画面で作ったプログラムが出ている</span></span></label>
+  </div>
+
+  <label class="memo"><span>この章で気になった事（あれば）</span><textarea id="m-sec4" rows="2" placeholder="例：人の体の図が出るまで時間がかかった"></textarea></label>
+</section>
+
+<section class="card" id="sec5" data-title="5. 設定">
+  <h2><span class="badge">5</span>設定 <span class="time">約3分</span><span class="secount" data-sec="sec5"></span></h2>
+
+  <div class="item">
+    <label class="row" for="s5-1"><input class="chk" type="checkbox" id="s5-1" data-short="歯車で設定が開いた">
+      <span class="txt"><span class="num">5-1</span><span class="do">「プログラム」の画面の右上にある歯車（⚙）を押す。</span>
+      <span class="ok">設定の画面が開いた</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s5-2"><input class="chk" type="checkbox" id="s5-2" data-short="「Pro をご利用中」と出ていた">
+      <span class="txt"><span class="num">5-2</span><span class="do">設定の上のほうにある「Pro」のところを見る。</span>
+      <span class="ok">「Pro をご利用中」と出ている</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s5-3"><input class="chk" type="checkbox" id="s5-3" data-short="データの画面で iCloud の行が読めた">
+      <span class="txt"><span class="num">5-3</span><span class="do">設定を下へ送り、「連携とデータ」の中の「データ（書き出し・読み戻し・同期）」を押す。</span>
+      <span class="ok">画面が開き、iCloud（アイクラウド）の行が読めた</span></span></label>
+    <fieldset class="choice" data-short="iCloud の行">
+      <legend>iCloud の行には、何と出ていましたか</legend>
+      <div class="chips">
+        <label><input type="radio" name="c-icloud" value="「最終同期：」と時刻"><span>「最終同期：」と時刻</span></label>
+        <label><input type="radio" name="c-icloud" value="「まだ同期していません」"><span>「まだ同期していません」</span></label>
+        <label><input type="radio" name="c-icloud" value="「iCloud の容量が足りず…」"><span>「iCloud の容量が足りず…」</span></label>
+        <label><input type="radio" name="c-icloud" value="「iCloud にサインインしていません…」"><span>「iCloud にサインインしていません…」</span></label>
+        <label><input type="radio" name="c-icloud" value="そのほか"><span>そのほか</span></label>
+      </div>
+    </fieldset>
+  </div>
+
+  <label class="memo"><span>この章で気になった事（あれば）</span><textarea id="m-sec5" rows="2" placeholder="例：歯車が見つからなかった"></textarea></label>
+</section>
+
+<section class="card" id="sec6" data-title="6. 全体をとおして">
+  <h2><span class="badge">6</span>全体をとおして <span class="secount" data-sec="sec6"></span></h2>
+
+  <div class="item">
+    <label class="row" for="s6-1"><input class="chk" type="checkbox" id="s6-1" data-short="アプリが急に閉じることはなかった">
+      <span class="txt"><span class="num">6-1</span><span class="do">アプリが急に閉じる（落ちる）ことは、一度もなかった。</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s6-2"><input class="chk" type="checkbox" id="s6-2" data-short="読めない所はなかった">
+      <span class="txt"><span class="num">6-2</span><span class="do">文字が切れたり重なったりして、読めない所はなかった。</span></span></label>
+  </div>
+
+  <div class="item">
+    <label class="row" for="s6-3"><input class="chk" type="checkbox" id="s6-3" data-short="押しても動かないボタンはなかった">
+      <span class="txt"><span class="num">6-3</span><span class="do">押しても動かないボタンはなかった。</span></span></label>
+  </div>
+
+  <label class="memo"><span>気になった所・遅かった所・分かりにくかった所（なんでも）</span><textarea id="m-sec6" rows="4" placeholder="例：「今週」の図が少しカクカクした"></textarea></label>
+</section>
+
+<section class="card" id="send">
+  <h2>結果を送る</h2>
+  <p class="intro">「結果をまとめてコピー」を押して、LINE やメールに貼って送ってください。</p>
+  <div class="btns no-print">
+    <button type="button" class="primary" id="copy">結果をまとめてコピー</button>
+    <button type="button" class="secondary" id="share" hidden>LINE などで送る</button>
+  </div>
+  <p class="status" id="copyStatus" aria-live="polite"></p>
+  <label class="field no-print"><span>送る文（自動でできます）</span><textarea id="summary" readonly></textarea></label>
+  <p class="intro">ボタンが効かない時は、この画面を上から順にスクリーンショットで撮って送ってください。</p>
+  <div class="btns no-print"><button type="button" class="quiet" id="reset">✓ と書いた事を全部消して、最初からやり直す</button></div>
+  <p class="lead"><b>ご協力ありがとうございました。</b></p>
+</section>
+
+<footer>テスト版（TestFlight）の確認用シート<br>2026年11月19日版</footer>
+</div>
+
+<script>
+(function(){
+  var KEY = 'pn-tf-check-20261119-v1';
+  function load(){ try { return JSON.parse(window.localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function store(s){ try { window.localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  var boxes = all('input.chk');
+  var fields = all('input[type=text], textarea:not(#summary)');
+  var radios = all('input[type=radio]');
+
+  function restore(){
+    var s = load();
+    boxes.forEach(function(b){ if (s[b.id] === true) b.checked = true; });
+    radios.forEach(function(r){ if (s['r:' + r.name] === r.value) r.checked = true; });
+    fields.forEach(function(f){ if (typeof s[f.id] === 'string') f.value = s[f.id]; });
+    var d = document.getElementById('f-date');
+    if (d && !d.value) { var t = new Date(); d.value = (t.getMonth() + 1) + '月' + t.getDate() + '日'; }
+  }
+  function collect(){
+    var s = {};
+    boxes.forEach(function(b){ if (b.checked) s[b.id] = true; });
+    radios.forEach(function(r){ if (r.checked) s['r:' + r.name] = r.value; });
+    fields.forEach(function(f){ if (f.value) s[f.id] = f.value; });
+    return s;
+  }
+  function chosen(name){
+    var hit = radios.filter(function(r){ return r.name === name && r.checked; })[0];
+    return hit ? hit.value : '（未選択）';
+  }
+  function val(id){ var el = document.getElementById(id); return el && el.value.trim() ? el.value.trim() : '（未記入）'; }
+
+  function summary(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    var lines = ['【Progress Note 動作確認の結果】',
+      'iPhone：' + val('f-device') + ' ／ iOS：' + val('f-ios') + ' ／ 日付：' + val('f-date'),
+      'できた数：' + done + ' / ' + boxes.length, ''];
+    all('section[data-title]').forEach(function(sec){
+      var sb = all('input.chk', sec);
+      var n = sb.filter(function(b){ return b.checked; }).length;
+      lines.push('■ ' + sec.getAttribute('data-title') + '（' + n + '/' + sb.length + '）');
+      all('.item', sec).forEach(function(item){
+        var b = item.querySelector('input.chk');
+        if (b) lines.push((b.checked ? '✓ ' : '□ ') + item.querySelector('.num').textContent + ' ' + b.getAttribute('data-short'));
+        var fs = item.querySelector('fieldset.choice');
+        if (fs) {
+          var name = fs.querySelector('input[type=radio]').name;
+          lines.push('　・' + fs.getAttribute('data-short') + '：' + chosen(name));
+        }
+      });
+      var memo = sec.querySelector('textarea');
+      if (memo && memo.value.trim()) lines.push('　メモ：' + memo.value.trim().replace(/\n+/g, ' ／ '));
+      lines.push('');
+    });
+    return lines.join('\n').replace(/\n+$/, '');
+  }
+
+  function update(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    document.getElementById('count').textContent = done;
+    document.getElementById('total').textContent = boxes.length;
+    document.getElementById('meter').style.width = (boxes.length ? Math.round(done * 100 / boxes.length) : 0) + '%';
+    all('.secount').forEach(function(el){
+      var sec = document.getElementById(el.getAttribute('data-sec'));
+      var sb = all('input.chk', sec);
+      var n = sb.filter(function(b){ return b.checked; }).length;
+      el.textContent = n + ' / ' + sb.length + (n === sb.length ? ' ✓' : '');
+    });
+    document.getElementById('summary').value = summary();
+  }
+
+  function saveAndUpdate(){ store(collect()); update(); }
+  document.addEventListener('change', saveAndUpdate);
+  document.addEventListener('input', function(e){ if (e.target && e.target.id !== 'summary') saveAndUpdate(); });
+
+  var status = document.getElementById('copyStatus');
+  function say(msg){ status.textContent = msg; }
+  function fallbackCopy(text){
+    var ta = document.getElementById('summary');
+    ta.value = text; ta.removeAttribute('readonly'); ta.focus(); ta.select();
+    try { ta.setSelectionRange(0, text.length); } catch (e) {}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.setAttribute('readonly', ''); ta.blur();
+    return ok;
+  }
+  document.getElementById('copy').addEventListener('click', function(){
+    var text = summary();
+    document.getElementById('summary').value = text;
+    var done = function(){ say('コピーしました。LINE やメールに貼って送ってください。'); };
+    var fail = function(){
+      if (fallbackCopy(text)) done();
+      else say('コピーできませんでした。下の「送る文」を長く押して全部を選び、コピーしてください。');
+    };
+    try {
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fail);
+      else fail();
+    } catch (e) { fail(); }
+  });
+
+  var share = document.getElementById('share');
+  if (navigator.share) {
+    share.hidden = false;
+    share.addEventListener('click', function(){
+      try { navigator.share({ title: 'Progress Note 動作確認の結果', text: summary() }).catch(function(){}); } catch (e) {}
+    });
+  }
+
+  var reset = document.getElementById('reset');
+  var armed = null;
+  reset.addEventListener('click', function(){
+    if (!armed) {
+      reset.textContent = 'もう一度押すと、全部消えます';
+      armed = setTimeout(function(){ armed = null; reset.textContent = '✓ と書いた事を全部消して、最初からやり直す'; }, 4000);
+      return;
+    }
+    clearTimeout(armed); armed = null;
+    boxes.forEach(function(b){ b.checked = false; });
+    radios.forEach(function(r){ r.checked = false; });
+    fields.forEach(function(f){ f.value = ''; });
+    try { window.localStorage.removeItem(KEY); } catch (e) {}
+    reset.textContent = '✓ と書いた事を全部消して、最初からやり直す';
+    restore(); update(); say('全部消しました。');
+  });
+
+  restore();
+  update();
+})();
+</script>
+</body>
+</html>
